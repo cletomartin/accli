@@ -4,6 +4,7 @@ from nose.tools import assert_true
 
 from bmcm.model import Invoice, Customer, CreationError
 
+
 class TestCustomer:
     def test_creation(self):
         try:
@@ -16,6 +17,7 @@ class TestCustomer:
         data = {'address': {}}
         inv = Customer(data)
         assert_true(inv.address)
+
 
 class TestInvoice:
     def test_creation_fail(self):
