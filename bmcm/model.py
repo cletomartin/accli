@@ -26,6 +26,15 @@ class ModelObject(object):
     def decode(self):
         raise NotImplemented()
 
+
+class Person(ModelObject):
+    def __init__(self, kwargs):
+        super(Person, self).__init__(kwargs)
+
+class Company(ModelObject):
+    def __init__(self, kwargs):
+        super(Company, self).__init__(kwargs)
+
 class Address(ModelObject):
     def __init__(self, kwargs):
         super(Address, self).__init__(kwargs)
