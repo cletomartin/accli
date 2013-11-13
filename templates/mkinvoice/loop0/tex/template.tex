@@ -67,15 +67,15 @@
     \Large{\textbf{\texttt{<< company.fullname >>}}} \\\vspace{-0.4cm}
     \hspace{-0.18cm}\rule{1.45cm}{1pt}\\\vspace{-0.25cm}
     \texttt{\small\textsl{Company Number: << company.id >>}}\\\vspace{-0.1cm}
-    \texttt{\small\textsl{<< company.address.number >> - << company.address.house_name >>}}\\\vspace{-0.40cm}
-    \texttt{\small\textsl{<< company.address.postal >> - << company.address.city >>}}\\\vspace{-0.4cm}
-    \texttt{\small\textsl{<< company.address.country >>}}
+    \texttt{\small\textsl{<< company.address.house_name >>, << company.address.number >>}}\\\vspace{-0.40cm}
+    \texttt{\small\textsl{<< company.address.street >> (<< company.address.postal >>)}}\\\vspace{-0.4cm}
+    \texttt{\small\textsl{<< company.address.city >> - << company.address.country >>}}
   \end{minipage}}
 \put(0,-138) { %
   \begin{minipage}{\textwidth}
     \begin{description}[noitemsep]
       \large
-    \item[\texttt{Customer:}] \texttt{<< invoice.customer.name >>}
+    \item[\texttt{Customer:}] \texttt{<< invoice.customer.fullname >>}
     \item[\texttt{VAT/ID:}] \texttt{<< invoice.customer.id >>}
     \item[\texttt{Address:}] \texttt{<<
         invoice.customer.address.street >>  <<

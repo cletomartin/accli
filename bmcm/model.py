@@ -23,28 +23,16 @@ class ModelObject(object):
         if not hasattr(self, name):
             setattr(self, name, value)
 
-    def decode(self):
-        raise NotImplemented()
-
-
-class Person(ModelObject):
-    def __init__(self, kwargs):
-        super(Person, self).__init__(kwargs)
 
 class Company(ModelObject):
     def __init__(self, kwargs):
         super(Company, self).__init__(kwargs)
-
-class Address(ModelObject):
-    def __init__(self, kwargs):
-        super(Address, self).__init__(kwargs)
 
 class Customer(ModelObject):
     mandatory = set(['address'])
 
     def __init__(self, kwargs):
         super(Customer, self).__init__(kwargs, Customer.mandatory)
-        self.address = Address(self.address)
 
 class InvoiceItem(ModelObject):
     mandatory = set(['quantity', 'price'])

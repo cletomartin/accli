@@ -62,7 +62,6 @@ if __name__ == '__main__':
             codecs.open(os.path.join(args.data_dir,'company.yaml')), YAMLLoader)
         invoice = Invoice(invoice_values)
         company = Company(company_values)
-        print dir(company)
 
         invoice.set_default('number', 'INVALID!!!!')
 
