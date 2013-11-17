@@ -1,0 +1,11 @@
+---
+date : 14/01/2013
+number : 2
+customer : !include companies/my-favorite-customer.yaml
+project: Yet another expensive project
+currency: EUR
+reference: ID1233  # something useful in this case
+items:
+  - name: Work done 1
+    quantity: 1
+    price: 150000.50

@@ -1,0 +1,14 @@
+---
+fullname: MyCompany Ltd.
+name: MyCompany
+type: Ltd
+id: 1234567
+address:
+  street: Centre Street
+  number: 30
+  house_name: ''
+  city: London
+  country: UK
+  postal: LN1 0AX
+director: !include people/myexample-director.yaml
+bank_details: !include bank-accounts/main.yaml

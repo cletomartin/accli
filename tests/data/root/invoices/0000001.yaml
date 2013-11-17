@@ -1,0 +1,17 @@
+---
+date : 06/11/2013
+number : 1
+customer : !include companies/customer-001.yaml
+project: A very expensive project
+currency: GBP
+reference:
+items:
+  - name: Work done 1
+    quantity: 2
+    price: 150
+  - name: Work done 2
+    quantity: 1
+    price: 1000.98
+  - name: Work done 3
+    quantity: 10
+    price: 40

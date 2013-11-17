@@ -1,0 +1,12 @@
+---
+fullname: My Favorite Customer Ltd.
+name: My Favorite Customer
+type: Ltd
+id: GB-999999999
+address:
+  street: Triangle Road
+  number: ''
+  house_name: Tall Building
+  city : Bath
+  country : UK
+  postal  : BT1 1SB
