@@ -155,10 +155,16 @@ if __name__ == '__main__':
 
     for filename in args.invoice_paths:
         invoice = Invoice(load_yaml(filename))
-        company = Company(load_yaml(os.path.join(args.data_dir, 'company.yaml')))
+        company = Company(load_yaml(os.path.join(args.data_dir, 'init.yaml')))
+
         invoice.set_default('number', 'XXXXXXXXX')
+
         output_filename = os.path.splitext(os.path.basename(filename))[0] + '.pdf'
         output_filename = os.path.join(os.path.abspath('.'), output_filename)
-        render.generate(invoice, company, output_filename)
+        try:
+            render.generate(invoice, company, output_filename)
+        except Exception as exc:
+            print "[Error]: during invoice generation '%s': %s" % (filename, exc.message)
+            sys.exit(1)
 
 sys.exit(0)
