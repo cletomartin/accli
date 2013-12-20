@@ -111,7 +111,7 @@ def load_yaml(filename):
     try:
         return yaml.load(codecs.open(filename, "r", "utf8"), YAMLLoader)
     except Exception as exc:
-        print "[Error]: {0}".format(exc.message)
+        print "[Error]: {0}".format(exc)
         sys.exit(1)
 
 
