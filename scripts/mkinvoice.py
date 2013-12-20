@@ -23,7 +23,8 @@ def create_arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'template_name',
-        help="Name of the template to use. Use <name> of '<template-dir>/<name>")
+        help=("Name of the template to use. Use <name> of "
+              "'<template-dir>/<name>'"))
     parser.add_argument(
         'invoice_paths', nargs='+', default=[], help="Paths to input invoice")
     parser.add_argument(
@@ -32,7 +33,8 @@ def create_arg_parser():
     parser.add_argument(
         '-t', '--template-dir', dest='template_dir',
         default='templates/mkinvoice',
-        help="set the path to template root directory. Default 'templates/mkinvoice'")
+        help=("set the path to template root directory. "
+              "Default 'templates/mkinvoice'"))
     parser.add_argument(
         '-f', '--format', dest='format', default='tex', choices=['tex'],
         help="defines template format. Default 'tex'")
@@ -49,7 +51,7 @@ def create_arg_parser():
 
 class TemplateRender(object):
     def __init__(self, tmpl_root_path):
-        self._tmpl_root_path  = tmpl_root_path
+        self._tmpl_root_path = tmpl_root_path
 
     def generate(self, input_file):
         raise NotImplemented
@@ -67,12 +69,12 @@ class TexTemplateRender(TemplateRender):
         super(TexTemplateRender, self).__init__(tmpl_root_path)
         self._jinja_env = jinja2.Environment(
             loader=jinja2.FileSystemLoader('.'),
-            block_start_string = '<%',
-            block_end_string = '%>',
-            variable_start_string = '<<',
-            variable_end_string = '>>',
-            comment_start_string = '<#',
-            comment_end_string = '#>')
+            block_start_string='<%',
+            block_end_string='%>',
+            variable_start_string='<<',
+            variable_end_string='>>',
+            comment_start_string='<#',
+            comment_end_string='#>')
 
     def generate(self, invoice, company, output_filename):
         template_fullpath = os.path.join(self._tmpl_root_path, 'tex')
@@ -159,12 +161,14 @@ if __name__ == '__main__':
 
         invoice.set_default('number', 'XXXXXXXXX')
 
-        output_filename = os.path.splitext(os.path.basename(filename))[0] + '.pdf'
+        output_filename = (os.path.splitext(os.path.basename(filename))[0] +
+                           '.pdf')
         output_filename = os.path.join(os.path.abspath('.'), output_filename)
         try:
             render.generate(invoice, company, output_filename)
         except Exception as exc:
-            print "[Error]: during invoice generation '%s': %s" % (filename, exc.message)
+            print ("[Error]: during invoice generation '%s': %s"
+                   % (filename, exc.message))
             sys.exit(1)
 
 sys.exit(0)
