@@ -1,0 +1,9 @@
+---
+id: main
+description: Day to day account
+bank_name: My Bank
+sort_code: 10-10-10
+account_number: 10101010
+swift: MYBANK22
+iban: XX22MYBN222222222222
+currency: GBP

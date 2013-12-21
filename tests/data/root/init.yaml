@@ -1,2 +1,2 @@
 ---
-me: !companies/mycompany.yaml
+me: !include companies/mycompany.yaml
