@@ -8,7 +8,8 @@ from nose.tools import assert_equal, assert_raises
 import bmcm.config
 from bmcm.core import YAMLLoader
 
-bmcm.config.BMCM_DATA_ROOTDIR='tests/data'
+bmcm.config.BMCM_DATA_ROOTDIR = 'tests/data'
+
 
 class TestYAMLLoader:
     def test_normal_usage(self):

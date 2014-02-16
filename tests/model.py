@@ -1,7 +1,6 @@
 # -*-  coding:utf-8 -*-
 
 from nose.tools import assert_true, assert_equal
-
 from bmcm.model import Invoice, Customer, CreationError
 
 
