@@ -2,14 +2,15 @@
 
 import os
 import yaml
+import codecs
 
-import bmcm
+from bmcm import config
 
 
 class YAMLLoader(yaml.loader.Loader):
     def __init__(self, stream):
         super(YAMLLoader, self).__init__(stream)
-        self.root_dir = bmcm.config.BMCM_DATA_ROOTDIR
+        self.root_dir = config.BMCM_DATA_ROOTDIR
         self._filename = stream.name
 
     def include(self, node):
@@ -18,6 +19,10 @@ class YAMLLoader(yaml.loader.Loader):
             raise yaml.YAMLError('inclusion loop detected at %s' % filename)
         with open(filename, 'r') as f:
             return yaml.load(f, YAMLLoader)
+
+    @staticmethod
+    def load(filename):
+        return yaml.load(codecs.open(filename, "r", "utf8"), YAMLLoader)
 
 
 YAMLLoader.add_constructor('!include', YAMLLoader.include)

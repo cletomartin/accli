@@ -3,8 +3,13 @@
 # (C) 2013, 2014 - Loopzero Ltd.
 # Code licensed under GPLv3.
 
+import os
 
-class CreationError(Exception):
+from bmcm.core import YAMLLoader
+from bmcm import config
+
+
+class LoadingError(Exception):
     pass
 
 
@@ -14,7 +19,7 @@ class ModelObject(object):
 
         missed = mandatory - set(kwargs.keys())
         if missed:
-            raise CreationError(
+            raise LoadingError(
                 'Missed mandatory attributes: %s' % repr(list(missed)))
         self.__dict__.update(kwargs)
 
@@ -22,10 +27,30 @@ class ModelObject(object):
         if not hasattr(self, name):
             setattr(self, name, value)
 
+    def __repr__(self):
+        return '{self.__class__}: {self.__dict__}'.format(self=self)
+
+    @classmethod
+    def create_from_file(cls, filepath, loader=YAMLLoader):
+        fullpath = os.path.join(
+            config.BMCM_DATA_ROOTDIR, cls.bmcm_directory, filepath)
+        if not os.path.isfile(fullpath):
+            raise LoadingError("Path '%s' does not exist" % fullpath)
+        return cls(loader.load(fullpath))
+
 
 class Company(ModelObject):
+    bmcm_directory = 'companies'
+
     def __init__(self, kwargs):
         super(Company, self).__init__(kwargs)
+
+
+class MyCompany(ModelObject):
+    bmcm_directory = ''
+
+    def __init__(self, kwargs):
+        super(MyCompany, self).__init__(kwargs)
 
 
 class Customer(ModelObject):
@@ -76,48 +101,68 @@ class BankAccount(ModelObject):
         self.set_default('currency', 'GBP')
 
 
-class JournalEntry(object):
+class JournalEntry(ModelObject):
     mandatory = set(['account', 'date', 'category', 'ammount'])
-    entry_by_category = dict()
 
-    def __init__(self):
-        raise NotImplementError('This class should not be instantiated')
+    def __init__(self, kwargs):
+        super(JournalEntry, self).__init__(kwargs)
 
     @classmethod
-    def create_from_category(kwargs):
+    def create_from_values(cls, kwargs):
         category = kwargs.get('category', None)
         subcategory = None
 
         if category is None:
-            raise CreationError(
+            raise LoadingError(
                 "'category' field required for building a JournalEntry")
 
         if '/' in category:
-            category, subcategory = e.category.split('/')
+            category, subcategory = category.split('/')
 
-        if category not in entry_by_category.keys():
-            raise CreationError(
+        candidates = JournalEntry.__subclasses__()
+        for c in candidates:
+            if c.category == category:
+                return c(kwargs)
+        else:
+            raise LoadingError(
                 'Unknown JournalEntry category: %s' % repr(category))
 
-        return self.entry_by_category.get(category)(kwargs)
 
-
-class ExpenseEntry(ModelObject):
+class ExpenseEntry(JournalEntry):
     mandatory = JournalEntry.mandatory
-    JournalEntry.entry_by_category.set('expense', __class__)
+    category = 'expense'
 
-    def __init__(self):
+    def __init__(self, kwargs):
         super(ExpenseEntry, self).__init__(kwargs)
+
+
+class TransferEntry(JournalEntry):
+    mandatory = JournalEntry.mandatory
+    category = 'transfer'
+
+    def __init__(self, kwargs):
+        super(TransferEntry, self).__init__(kwargs)
+
+
+class PaymentEntry(JournalEntry):
+    mandatory = JournalEntry.mandatory
+    category = 'payment'
+
+    def __init__(self, kwargs):
+        super(PaymentEntry, self).__init__(kwargs)
+
+
+class CapitalEntry(JournalEntry):
+    mandatory = JournalEntry.mandatory
+    category = 'capital'
+
+    def __init__(self, kwargs):
+        super(CapitalEntry, self).__init__(kwargs)
 
 
 class Journal(ModelObject):
     mandatory = set(['year', 'begin_date', 'end_date', 'accounts'])
-
-    entry_by_category = {
-        'expense': ExpenseEntry,
-        'transfer': TransferEntry,
-        'payment': PaymentEntry
-    }
+    bmcm_directory = 'journals'
 
     def __init__(self, kwargs):
         super(Journal, self).__init__(kwargs)
@@ -129,5 +174,5 @@ class Journal(ModelObject):
     def _create_entries(self):
         retval = []
         for e in self.entries:
-
+            retval.append(JournalEntry.create_from_values(e))
         return retval
