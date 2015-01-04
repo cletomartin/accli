@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*-  coding:utf-8 -*-
 
 # (C) 2013, Loopzero Ltd.
@@ -93,7 +93,7 @@ class TexTemplateRender(TemplateRender):
                     os.system('ln -sf %s %s' % (
                         os.path.join(os.path.abspath(root), f),
                         os.path.join(tmp_dir, f)))
-            file(tmp_filename, 'w').write(output.encode('utf-8'))
+            open(tmp_filename, mode='w', encoding='utf-8').write(output)
             os.system('cd %s; pdflatex output.tex' % tmp_dir)
             os.system('cd %s; mv output.pdf %s' % (tmp_dir, output_filename))
         finally:
@@ -113,17 +113,17 @@ def load_yaml(filename):
     try:
         return yaml.load(codecs.open(filename, "r", "utf8"), YAMLLoader)
     except Exception as exc:
-        print "[Error]: {0}".format(exc)
+        print("[Error]: {0}".format(exc))
         sys.exit(1)
 
 
 def show_renders():
     if not RENDERS:
-        print 'No renders available!'
+        print('No renders available!')
         return
 
     for r in RENDERS:
-        print '%s: %s' % (r.name, r.description)
+        print('%s: %s' % (r.name, r.description))
 
 
 if __name__ == '__main__':
@@ -136,20 +136,20 @@ if __name__ == '__main__':
 
     template_path = os.path.join(args.template_dir, args.template_name)
     if not os.path.isdir(template_path):
-        print "[Error]: Template not found: '{0}'".format(template_path)
+        print("[Error]: Template not found: '{0}'".format(template_path))
         sys.exit(1)
 
     for filename in args.invoice_paths:
         if not os.path.isfile(filename):
-            print "[Error]: Invalid invoice file: '{0}'".format(filename)
+            print("[Error]: Invalid invoice file: '{0}'".format(filename))
             sys.exit(1)
 
     render = get_renders_by_extension(args.format)
     if not render:
-        print "[Error]: not render found for: '{0}'".format(args.format)
+        print("[Error]: not render found for: '{0}'".format(args.format))
         sys.exit(1)
     elif len(render) > 1:
-        print "[Error]: too many renders: '{0}'".format(args.format)
+        print("[Error]: too many renders: '{0}'".format(args.format))
         sys.exit(1)
 
     render = render[0](template_path)
@@ -167,8 +167,8 @@ if __name__ == '__main__':
         try:
             render.generate(invoice, company, output_filename)
         except Exception as exc:
-            print ("[Error]: during invoice generation '%s': %s"
-                   % (filename, exc.message))
+            print(("[Error]: during invoice generation '%s': %s"
+                   % (filename, exc.message)))
             sys.exit(1)
 
 sys.exit(0)

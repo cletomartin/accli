@@ -20,7 +20,7 @@ class ModelObject(object):
         missed = mandatory - set(kwargs.keys())
         if missed:
             raise LoadingError(
-                'Missed mandatory attributes: %s' % repr(list(missed)))
+                'Missed mandatory attributes: {0}'.format(repr(list(missed))))
         self.__dict__.update(kwargs)
 
     def set_default(self, name, value):
