@@ -5,10 +5,10 @@ from cStringIO import StringIO
 
 from nose.tools import assert_equal, assert_raises
 
-import bmcm.config
-from bmcm.core import YAMLLoader
+import accli.config
+from accli.core import YAMLLoader
 
-bmcm.config.BMCM_DATA_ROOTDIR = 'tests/data'
+accli.config.ACCLI_DATA_ROOTDIR = 'tests/data'
 
 
 class TestYAMLLoader:

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*-  coding:utf-8 -*-
 
 # (C) 2014 Loopzero Ltd.
@@ -9,27 +9,28 @@ import sys
 import argparse
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-from bmcm import config
-from bmcm.core import YAMLLoader
-from bmcm.model import Journal, MyCompany
+from accli import config
+from accli.core import YAMLLoader
+from accli.model import Journal, MyCompany
 
 
 def create_arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-d', '--data-dir', dest='data_dir', default=config.BMCM_DATA_ROOTDIR,
-        help="set the path to bmcm data root directory")
+        '-d', '--data-dir', dest='data_dir', default=config.ACCLI_DATA_ROOTDIR,
+        help="set the path to accli data root directory")
     return parser
 
 
 if __name__ == '__main__':
     parser = create_arg_parser()
     args, opts = parser.parse_known_args()
-    config.BMCM_DATA_ROOTDIR = args.data_dir
+    config.ACCLI_DATA_ROOTDIR = args.data_dir
 
     mycompany = MyCompany.create_from_file('init.yaml')
     bank_accounts = mycompany.bank_accounts
 
     journal = Journal.create_from_file('2013.yaml')
+    print(journal)
 
 sys.exit(0)

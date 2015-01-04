@@ -14,9 +14,9 @@ import yaml
 import tempfile
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-import bmcm.config as config
-from bmcm.core import YAMLLoader
-from bmcm.model import Invoice, Company
+import accli.config as config
+from accli.core import YAMLLoader
+from accli.model import Invoice, Company
 
 
 def create_arg_parser():
@@ -28,8 +28,8 @@ def create_arg_parser():
     parser.add_argument(
         'invoice_paths', nargs='+', default=[], help="Paths to input invoice")
     parser.add_argument(
-        '-d', '--data-dir', dest='data_dir', default=config.BMCM_DATA_ROOTDIR,
-        help="set the path to bmcm data root directory")
+        '-d', '--data-dir', dest='data_dir', default=config.ACCLI_DATA_ROOTDIR,
+        help="set the path to accli data root directory")
     parser.add_argument(
         '-t', '--template-dir', dest='template_dir',
         default='templates/mkinvoice',
@@ -153,7 +153,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     render = render[0](template_path)
-    config.BMCM_DATA_ROOTDIR = args.data_dir
+    config.ACCLI_DATA_ROOTDIR = args.data_dir
 
     for filename in args.invoice_paths:
         invoice = Invoice(load_yaml(filename))

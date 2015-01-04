@@ -5,8 +5,8 @@
 
 import os
 
-from bmcm.core import YAMLLoader
-from bmcm import config
+from accli.core import YAMLLoader
+from accli import config
 
 
 class LoadingError(Exception):
@@ -33,21 +33,21 @@ class ModelObject(object):
     @classmethod
     def create_from_file(cls, filepath, loader=YAMLLoader):
         fullpath = os.path.join(
-            config.BMCM_DATA_ROOTDIR, cls.bmcm_directory, filepath)
+            config.ACCLI_DATA_ROOTDIR, cls.accli_directory, filepath)
         if not os.path.isfile(fullpath):
             raise LoadingError("Path '%s' does not exist" % fullpath)
         return cls(loader.load(fullpath))
 
 
 class Company(ModelObject):
-    bmcm_directory = 'companies'
+    accli_directory = 'companies'
 
     def __init__(self, kwargs):
         super(Company, self).__init__(kwargs)
 
 
 class MyCompany(ModelObject):
-    bmcm_directory = ''
+    accli_directory = ''
 
     def __init__(self, kwargs):
         super(MyCompany, self).__init__(kwargs)
@@ -162,7 +162,7 @@ class CapitalEntry(JournalEntry):
 
 class Journal(ModelObject):
     mandatory = set(['year', 'begin_date', 'end_date', 'accounts'])
-    bmcm_directory = 'journals'
+    accli_directory = 'journals'
 
     def __init__(self, kwargs):
         super(Journal, self).__init__(kwargs)

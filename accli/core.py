@@ -4,13 +4,13 @@ import os
 import yaml
 import codecs
 
-from bmcm import config
+from accli import config
 
 
 class YAMLLoader(yaml.loader.Loader):
     def __init__(self, stream):
         super(YAMLLoader, self).__init__(stream)
-        self.root_dir = config.BMCM_DATA_ROOTDIR
+        self.root_dir = config.ACCLI_DATA_ROOTDIR
         self._filename = stream.name
 
     def include(self, node):
