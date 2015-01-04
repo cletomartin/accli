@@ -11,7 +11,7 @@ import argparse
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 from accli import config
 from accli.core import YAMLLoader
-from accli.model import Journal, MyCompany
+from accli.model import Journal, MyCompany, Invoice, TransferEntry
 
 
 def create_arg_parser():
@@ -28,9 +28,27 @@ if __name__ == '__main__':
     config.ACCLI_DATA_ROOTDIR = args.data_dir
 
     mycompany = MyCompany.create_from_file('init.yaml')
-    bank_accounts = mycompany.bank_accounts
+    bank_accounts = [b['id'] for b in mycompany.bank_accounts]
 
-    journal = Journal.create_from_file('2013.yaml')
-    print(journal)
+    journals = Journal.create_all()
+    invoices = Invoice.create_all()
+    entries = [e for j in journals for e in j.entries]
+    entries.extend(invoices)
+    entries = sorted(entries, key=lambda e: e.date)
+
+    balances = {}
+    for b in bank_accounts:
+        balances[b] = 0.0
+
+    for e in entries:
+        if isinstance(e, Invoice):
+            balances['main'] += e.total_paid
+        elif isinstance(e, TransferEntry):
+            balances[e.orig] -= e.amount
+            balances[e.account] += e.amount
+        else:
+            balances[e.account] += e.amount
+
+        print(balances, e.date)
 
 sys.exit(0)

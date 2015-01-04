@@ -7,6 +7,7 @@ import os
 
 from accli.core import YAMLLoader
 from accli import config
+from accli.utils import get_all_yaml_files
 
 
 class LoadingError(Exception):
@@ -37,6 +38,12 @@ class ModelObject(object):
         if not os.path.isfile(fullpath):
             raise LoadingError("Path '%s' does not exist" % fullpath)
         return cls(loader.load(fullpath))
+
+    @classmethod
+    def create_all(cls, loader=YAMLLoader):
+        dirpath = os.path.join(config.ACCLI_DATA_ROOTDIR, cls.accli_directory)
+        yaml_files = get_all_yaml_files(dirpath)
+        return [cls(loader.load(f)) for f in yaml_files]
 
 
 class Company(ModelObject):
@@ -69,17 +76,23 @@ class InvoiceItem(ModelObject):
 
 
 class Invoice(ModelObject):
-    mandatory = set(['customer', 'items'])
+    mandatory = set(['date', 'customer', 'items'])
+    accli_directory = 'invoices'
 
     def __init__(self, kwargs):
         super(Invoice, self).__init__(kwargs, Invoice.mandatory)
         self.customer = Customer(self.customer)
         self.set_default('tax_rate', 0.)
         self.set_default('currency', 'GBP')
+        self.set_default('paid', True)
+        self.set_default('account_paid', 'main')
 
         self.items = [InvoiceItem(x) for x in self.items]
         self.subtotal = sum([x.total for x in self.items])
         self.total = self.subtotal + self.subtotal * self.tax_rate
+
+        self.set_default('amount_paid', self.total)
+        self.total_paid = float(self.amount_paid) if self.paid else 0.
 
     @property
     def number_as_str(self):
@@ -102,10 +115,11 @@ class BankAccount(ModelObject):
 
 
 class JournalEntry(ModelObject):
-    mandatory = set(['account', 'date', 'category', 'ammount'])
+    mandatory = set(['account', 'date', 'category', 'amount'])
 
     def __init__(self, kwargs):
         super(JournalEntry, self).__init__(kwargs)
+        self.amount = float(self.amount)
 
     @classmethod
     def create_from_values(cls, kwargs):
