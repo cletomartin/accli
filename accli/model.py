@@ -40,7 +40,7 @@ class ModelObject(object):
         return cls(loader.load(fullpath))
 
     @classmethod
-    def create_all(cls, loader=YAMLLoader):
+    def collect_all(cls, loader=YAMLLoader):
         dirpath = os.path.join(config.ACCLI_DATA_ROOTDIR, cls.accli_directory)
         yaml_files = get_all_yaml_files(dirpath)
         return [cls(loader.load(f)) for f in yaml_files]

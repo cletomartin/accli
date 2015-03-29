@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*-  coding:utf-8 -*-
 
 # (C) 2014 Loopzero Ltd.
@@ -7,6 +7,7 @@
 import os
 import sys
 import argparse
+import datetime
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 from accli import config
@@ -17,21 +18,50 @@ from accli.model import Journal, MyCompany, Invoice, TransferEntry
 def create_arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        '--from', dest='from_', nargs='?',
+        help="show results from DATE. Format expected: YYYY-MM-DD")
+    parser.add_argument(
+        '--to', nargs='?',
+        help="show results until DATE. Format expected: YYYY-MM-DD")
+    parser.add_argument(
         '-d', '--data-dir', dest='data_dir', default=config.ACCLI_DATA_ROOTDIR,
         help="set the path to accli data root directory")
     return parser
 
 
+def create_filters(options):
+    retval = []
+
+    if options.from_ is not None:
+        try:
+            from_date = datetime.datetime.strptime(options.from_, '%Y-%m-%d')
+            from_date = from_date.date()
+            retval.append(lambda x: x.date >= from_date)
+        except ValueError:
+            print('Invalid value for --from option. Expected %Y-%m-%d')
+            sys.exit(0)
+
+    if options.to is not None:
+        try:
+            to_date = datetime.datetime.strptime(options.to, '%Y-%m-%d')
+            to_date = to_date.date()
+            retval.append(lambda x: x.date <= to_date)
+        except ValueError:
+            print('Invalid value for --to option. Expected %Y-%m-%d')
+            sys.exit(0)
+
+    return retval
+
 if __name__ == '__main__':
     parser = create_arg_parser()
-    args, opts = parser.parse_known_args()
-    config.ACCLI_DATA_ROOTDIR = args.data_dir
+    opts, args = parser.parse_known_args()
+    config.ACCLI_DATA_ROOTDIR = opts.data_dir
 
     mycompany = MyCompany.create_from_file('init.yaml')
     bank_accounts = [b['id'] for b in mycompany.bank_accounts]
 
-    journals = Journal.create_all()
-    invoices = Invoice.create_all()
+    journals = Journal.collect_all()
+    invoices = Invoice.collect_all()
     entries = [e for j in journals for e in j.entries]
     entries.extend(invoices)
     entries = sorted(entries, key=lambda e: e.date)
@@ -39,6 +69,10 @@ if __name__ == '__main__':
     balances = {}
     for b in bank_accounts:
         balances[b] = 0.0
+
+    filters = create_filters(opts)
+    for f in filters:
+        entries = filter(f, entries)
 
     for e in entries:
         if isinstance(e, Invoice):
@@ -49,6 +83,6 @@ if __name__ == '__main__':
         else:
             balances[e.account] += e.amount
 
-        print(balances, e.date)
+    print(balances, e.date)
 
 sys.exit(0)
