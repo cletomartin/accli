@@ -29,7 +29,7 @@ def create_arg_parser():
     return parser
 
 
-def create_filters(options):
+def create_entries_filters(options):
     retval = []
 
     if options.from_ is not None:
@@ -70,19 +70,22 @@ if __name__ == '__main__':
     for b in bank_accounts:
         balances[b] = 0.0
 
-    filters = create_filters(opts)
+    filters = create_entries_filters(opts)
     for f in filters:
         entries = filter(f, entries)
 
     for e in entries:
         if isinstance(e, Invoice):
             balances['main'] += e.total_paid
+            print('invoice,{0.total_paid},invoice #{0.number},{0.date}'.format(
+                e))
+            continue
         elif isinstance(e, TransferEntry):
             balances[e.orig] -= e.amount
             balances[e.account] += e.amount
         else:
             balances[e.account] += e.amount
-
-    print(balances, e.date)
+            print('{0.category},{0.amount},{0.description},{0.date}'.format(
+                e))
 
 sys.exit(0)

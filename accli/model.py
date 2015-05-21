@@ -115,7 +115,7 @@ class BankAccount(ModelObject):
 
 
 class JournalEntry(ModelObject):
-    mandatory = set(['account', 'date', 'category', 'amount'])
+    mandatory = set(['account', 'date', 'category', 'amount', 'description'])
 
     def __init__(self, kwargs):
         super(JournalEntry, self).__init__(kwargs)
@@ -171,6 +171,8 @@ class CapitalEntry(JournalEntry):
     category = 'capital'
 
     def __init__(self, kwargs):
+        if 'description' not in kwargs:
+            kwargs['description'] = 'Capital transfer'
         super(CapitalEntry, self).__init__(kwargs)
 
 
