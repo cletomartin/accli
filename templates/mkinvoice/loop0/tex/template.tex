@@ -101,8 +101,12 @@
     << i.name >> & << i.quantity >> & <<  '%.2f' | format(i.price) >> & << '%.2f' | format(i.total) >> \\
     <% endfor %>
     \\\hline
-    Sub-total&&& << '%.2f' | format(invoice.subtotal) >>\\
+    Sub-total&&& << '%.2f' | format(invoice.subtotal) >>
+    <% if invoice.tax_rate != 0 %>
+    \\\hline
+    Taxes&<< '%.1f' | format(invoice.tax_rate * 100) >>\%&& << '%.2f' | format(invoice.total - invoice.subtotal) >>\\
     \hline\\
+    <% endif %>
     \large{\textbf{Total}}&&&\large{%
       \textbf{<< '%.2f' | format(invoice.total) >>} << invoice.currency >>}
   \end{tabular}}
