@@ -9,6 +9,7 @@ On GNU/Linux:
 
 ```
 $ apt-get install libpython3-dev virtualenv
-$ mkvirtualenv --python=/usr/bin/python3 accli
-$ pip install -r requirements.txt
+$ virtualenv --python=/usr/bin/python3 accli
+$ source accli/bin/activate
+(accli) $ pip install -r requirements.txt
 ```
