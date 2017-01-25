@@ -83,7 +83,7 @@ class Invoice(ModelObject):
         super(Invoice, self).__init__(kwargs, Invoice.mandatory)
         self.customer = Customer(self.customer)
         self.set_default('vat_tax', 0.)
-        self.set_default('witholding_tax', 0.)
+        self.set_default('withholding_tax', 0.)
         self.set_default('currency', 'GBP')
         self.set_default('paid', True)
         self.set_default('account_paid', 'main')
@@ -92,7 +92,7 @@ class Invoice(ModelObject):
         self.subtotal = sum([x.total for x in self.items])
         self.total = (
             self.subtotal + (self.subtotal * self.vat_tax) -
-            (self.subtotal * self.witholding_tax))
+            (self.subtotal * self.withholding_tax))
 
         self.set_default('amount_paid', self.total)
         self.total_paid = float(self.amount_paid) if self.paid else 0.
