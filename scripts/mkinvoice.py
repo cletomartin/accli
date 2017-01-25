@@ -68,7 +68,7 @@ class TexTemplateRender(TemplateRender):
     def __init__(self, tmpl_root_path):
         super(TexTemplateRender, self).__init__(tmpl_root_path)
         self._jinja_env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader('.'),
+            loader=jinja2.FileSystemLoader(self._tmpl_root_path),
             block_start_string='<%',
             block_end_string='%>',
             variable_start_string='<<',
@@ -78,7 +78,7 @@ class TexTemplateRender(TemplateRender):
 
     def generate(self, invoice, company, output_filename):
         template_fullpath = os.path.join(self._tmpl_root_path, 'tex')
-        template_file = os.path.join(template_fullpath, 'template.tex')
+        template_file = os.path.join('tex', 'template.tex')
         template = self._jinja_env.get_template(template_file)
 
         output = template.render(invoice=invoice, company=company)
@@ -97,7 +97,7 @@ class TexTemplateRender(TemplateRender):
             os.system('cd %s; pdflatex output.tex' % tmp_dir)
             os.system('cd %s; mv output.pdf %s' % (tmp_dir, output_filename))
         finally:
-            #os.system('rm -rf %s' % tmp_dir)
+            # os.system('rm -rf %s' % tmp_dir)
             pass
 
 RENDERS = [
@@ -157,18 +157,21 @@ if __name__ == '__main__':
 
     for filename in args.invoice_paths:
         invoice = Invoice(load_yaml(filename))
-        company = Company(load_yaml(os.path.join(args.data_dir, 'init.yaml')))
+        company = Company(
+            load_yaml(os.path.join(args.data_dir, 'init.yaml'))['me'])
 
         invoice.set_default('number', 'XXXXXXXXX')
 
         output_filename = (os.path.splitext(os.path.basename(filename))[0] +
                            '.pdf')
         output_filename = os.path.join(os.path.abspath('.'), output_filename)
+
         try:
             render.generate(invoice, company, output_filename)
+
         except Exception as exc:
-            print(("[Error]: during invoice generation '%s': %s"
-                   % (filename, exc.message)))
+            print(("[Error]: during invoice generation '%s': %s %s"
+                   % (filename, type(exc), exc.message)))
             sys.exit(1)
 
 sys.exit(0)
