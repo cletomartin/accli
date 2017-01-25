@@ -102,9 +102,9 @@
     <% endfor %>
     \\\hline
     Sub-total&&& << '%.2f' | format(invoice.subtotal) >>
-    <% if invoice.tax_rate != 0 %>
+    <% if invoice.vat_tax != 0 %>
     \\\hline
-    Taxes&<< '%.1f' | format(invoice.tax_rate * 100) >>\%&& << '%.2f' | format(invoice.total - invoice.subtotal) >>\\
+    Taxes&<< '%.1f' | format(invoice.vat_tax * 100) >>\%&& << '%.2f' | format(invoice.total - invoice.subtotal) >>\\
     \hline\\
     <% endif %>
     \large{\textbf{Total}}&&&\large{%
