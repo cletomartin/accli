@@ -99,7 +99,7 @@ class Invoice(ModelObject):
 
     @property
     def number_as_str(self):
-        return "%07d" % self.number
+        return '%07d' % self.number
 
 
 class BankAccount(ModelObject):

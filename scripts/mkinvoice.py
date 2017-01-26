@@ -25,10 +25,10 @@ def create_arg_parser():
         help=("Name of the template to use. Use <name> of "
               "'<template-dir>/<name>'"))
     parser.add_argument(
-        'invoice_paths', nargs='+', default=[], help="Paths to input invoice")
+        'invoice_paths', nargs='+', default=[], help='Paths to input invoice')
     parser.add_argument(
         '-d', '--data-dir', dest='data_dir', default=config.ACCLI_DATA_ROOTDIR,
-        help="set the path to accli data root directory")
+        help='set the path to accli data root directory')
     parser.add_argument(
         '-t', '--template-dir', dest='template_dir',
         default='templates/mkinvoice',
@@ -42,7 +42,7 @@ def create_arg_parser():
         help="defines template format. Default 'tex'")
     parser.add_argument(
         '-r', '--list-renders', dest='list_renders', action='store_true',
-        help="shows available renders.")
+        help='shows available renders.')
 
     # TBD
     # parser.add_argument(
@@ -113,9 +113,9 @@ def get_renders_by_extension(ext):
 
 def load_yaml(filename):
     try:
-        return yaml.load(codecs.open(filename, "r", "utf8"), YAMLLoader)
+        return yaml.load(codecs.open(filename, 'r', 'utf8'), YAMLLoader)
     except Exception as exc:
-        print("[Error]: {0}".format(exc))
+        print('[Error]: {0}'.format(exc))
         sys.exit(1)
 
 
