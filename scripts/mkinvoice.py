@@ -8,7 +8,6 @@ import argparse
 import sys
 import os
 import jinja2
-import datetime
 import codecs
 import yaml
 import tempfile
@@ -35,6 +34,9 @@ def create_arg_parser():
         default='templates/mkinvoice',
         help=("set the path to template root directory. "
               "Default 'templates/mkinvoice'"))
+    parser.add_argument(
+        '-o', '--output-dir', dest='output_dir', default=os.getcwd(),
+        help='set the output path for the generated files')
     parser.add_argument(
         '-f', '--format', dest='format', default='tex', choices=['tex'],
         help="defines template format. Default 'tex'")
@@ -164,7 +166,7 @@ if __name__ == '__main__':
 
         output_filename = (os.path.splitext(os.path.basename(filename))[0] +
                            '.pdf')
-        output_filename = os.path.join(os.path.abspath('.'), output_filename)
+        output_filename = os.path.join(args.output_dir, output_filename)
 
         try:
             render.generate(invoice, company, output_filename)
