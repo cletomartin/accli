@@ -22,7 +22,7 @@ class YAMLLoader(yaml.loader.Loader):
 
     @staticmethod
     def load(filename):
-        return yaml.load(codecs.open(filename, "r", "utf8"), YAMLLoader)
+        return yaml.load(codecs.open(filename, 'r', 'utf8'), YAMLLoader)
 
 
 YAMLLoader.add_constructor('!include', YAMLLoader.include)

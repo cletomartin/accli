@@ -19,13 +19,13 @@ def create_arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--from', dest='from_', nargs='?',
-        help="show results from DATE. Format expected: YYYY-MM-DD")
+        help='show results from DATE. Format expected: YYYY-MM-DD')
     parser.add_argument(
         '--to', nargs='?',
-        help="show results until DATE. Format expected: YYYY-MM-DD")
+        help='show results until DATE. Format expected: YYYY-MM-DD')
     parser.add_argument(
         '-d', '--data-dir', dest='data_dir', default=config.ACCLI_DATA_ROOTDIR,
-        help="set the path to accli data root directory")
+        help='set the path to accli data root directory')
     return parser
 
 
