@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*-  coding:utf-8 -*-
 
-# (C) 2013, Loopzero Ltd.
+# (C) 2013, 2017 Cleto Martin
 # Code licensed under GPLv3
 
 import argparse
