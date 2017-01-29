@@ -1,17 +1,11 @@
 #!/usr/bin/env python3
 # -*-  coding:utf-8 -*-
 
-# (C) 2014 Loopzero Ltd.
-# Code licensed under GPLv3
-
-import os
 import sys
 import argparse
 import datetime
 
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 from accli import config
-from accli.core import YAMLLoader
 from accli.model import Journal, MyCompany, Invoice, TransferEntry
 
 
@@ -51,6 +45,7 @@ def create_entries_filters(options):
             sys.exit(0)
 
     return retval
+
 
 if __name__ == '__main__':
     parser = create_arg_parser()

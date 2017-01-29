@@ -4,6 +4,7 @@ all_tests:
   script:
   - pip install -r requirements.txt
   - pip install -r requirements-dev.txt
+  - make lint
   - make test
   only:
     - master

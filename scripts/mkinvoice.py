@@ -12,7 +12,6 @@ import codecs
 import yaml
 import tempfile
 
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 import accli.config as config
 from accli.core import YAMLLoader
 from accli.model import Invoice, Company
@@ -101,6 +100,7 @@ class TexTemplateRender(TemplateRender):
         finally:
             # os.system('rm -rf %s' % tmp_dir)
             pass
+
 
 RENDERS = [
     TexTemplateRender

@@ -5,11 +5,11 @@ from accli.model import Invoice, Customer, LoadingError
 
 
 class TestCustomer:
-    def test_creation(self):
+    def test_invalid_creation(self):
         try:
-            inv = Customer({})
+            Customer({})
             assert False, "This cannot be happened"
-        except CreationError as exc:
+        except LoadingError as exc:
             assert_true('address' in exc.message)
 
     def test_creation(self):
@@ -19,9 +19,9 @@ class TestCustomer:
 
 
 class TestInvoice:
-    def test_creation_fail(self):
+    def test_invalid_creation(self):
         try:
-            inv = Invoice({})
+            Invoice({})
             assert False, "This cannot be happened"
         except LoadingError as exc:
             assert_true('customer' in str(exc))

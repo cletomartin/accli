@@ -6,6 +6,9 @@ all:
 test:
 	nosetests ./tests
 
+lint:
+	flake8
+
 clean:
 	$(RM) $(shell find . -name "*~") $(shell find . -name "*.pyc")
 	$(RM) -r $(shell find . -name "__pycache__") build
