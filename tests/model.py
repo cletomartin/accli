@@ -1,16 +1,13 @@
 # -*-  coding:utf-8 -*-
 
-from nose.tools import assert_true, assert_equal
+from nose.tools import assert_equal, raises
 from accli.model import Invoice, Customer, LoadingError
 
 
 class TestCustomer:
+    @raises(LoadingError)
     def test_invalid_creation(self):
-        try:
-            Customer({})
-            assert False, "This cannot be happened"
-        except LoadingError as exc:
-            assert_true('address' in exc.message)
+        Customer({})
 
     def test_creation(self):
         data = {'address': {}}
@@ -19,10 +16,6 @@ class TestCustomer:
 
 
 class TestInvoice:
+    @raises(LoadingError)
     def test_invalid_creation(self):
-        try:
-            Invoice({})
-            assert False, "This cannot be happened"
-        except LoadingError as exc:
-            assert_true('customer' in str(exc))
-            assert_true('items' in str(exc))
+        Invoice({})
