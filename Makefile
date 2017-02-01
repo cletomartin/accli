@@ -1,7 +1,9 @@
 # -*- coding:utf-8; mode: make -*-
 
+.PHONY: all test lint clean dist-clean
+
 all:
-	# nothing to do for all
+	@echo "Nothing to do for 'all'"
 
 test:
 	nosetests ./tests
