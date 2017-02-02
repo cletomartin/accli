@@ -1,10 +1,7 @@
 # -*-  coding:utf-8 -*-
 
-# (C) 2014 Loopzero Ltd.
-# Code licensed under GPLv3
-
 import os
-from os.path import isfile, join
+from os.path import join
 
 
 def get_all_yaml_files(root_dir):

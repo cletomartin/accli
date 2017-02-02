@@ -1,7 +1,6 @@
 # -*-  coding:utf-8 -*-
 
 import yaml
-from io import StringIO
 
 from nose.tools import assert_equal, assert_raises
 
