@@ -1,9 +1,12 @@
 # -*- coding:utf-8; mode python -*-
 
 import os
+import yaml
 
-import accli.config as config
-from accli.core import Command
+from accli import config
+from accli.core import Command, Invoice, Company
+from accli.utils import get_template_full_path
+from accli.template_render import TemplateRender
 
 
 class ListCmd(Command):
@@ -38,10 +41,10 @@ class ShowCmd(Command):
 class GenerateCmd(Command):
     def __init__(self, subparsers):
         super().__init__('generate', subparsers)
+
         self.parser.add_argument(
             'template_name',
-            help=("Name of the template to use. Use <name> of "
-                  "'<template-dir>/<name>'"))
+            help='Name of the template to use')
         self.parser.add_argument(
             'invoice_paths', nargs='+', default=[],
             help='Paths to input invoice')
@@ -65,7 +68,16 @@ class GenerateCmd(Command):
             help='shows available renders.')
 
     def run(self, args):
-        print(args)
+        template_path = get_template_full_path(
+            args.template_dir, args.template_name)
+
+        render = TemplateRender(template_path)
+
+        for filename in args.invoice_paths:
+            # invoice = Invoice(yaml.load(codecs.open(filename, 'r', 'utf8'))
+            # company = Company(load_yaml(os.path.join(args.data_dir, 'init.yaml'))['me'])
+            output = render.render()
+
         return 0
 
 
