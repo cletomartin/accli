@@ -5,7 +5,7 @@ from os.path import join
 import yaml
 import codecs
 
-from exc import TemplateNotFoundError
+from accli.exc import TemplateNotFoundError
 
 
 def get_all_yaml_files(root_dir):
