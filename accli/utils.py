@@ -17,7 +17,7 @@ def get_all_yaml_files(root_dir):
 def get_template_full_path(templates_dir, template_name):
     template_path = join(templates_dir, template_name)
 
-    if not os.isdir(template_path):
+    if not os.path.isdir(template_path):
         raise TemplateNotFoundError()
 
     for path, list_dirs, list_files in os.walk(template_path):

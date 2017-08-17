@@ -1,11 +1,14 @@
 # -*- coding:utf-8; mode python -*-
 
 import os
+import codecs
+
 import yaml
 
 from accli import config
-from accli.core import Command, Invoice, Company
-from accli.utils import get_template_full_path
+from accli.core import Command
+from accli.model import Invoice, Company
+from accli.utils import get_template_full_path, load_yaml
 from accli.template_render import TemplateRender
 
 
@@ -74,9 +77,13 @@ class GenerateCmd(Command):
         render = TemplateRender(template_path)
 
         for filename in args.invoice_paths:
-            # invoice = Invoice(yaml.load(codecs.open(filename, 'r', 'utf8'))
-            # company = Company(load_yaml(os.path.join(args.data_dir, 'init.yaml'))['me'])
-            output = render.render()
+            invoice = Invoice(yaml.load(codecs.open(filename, 'r', 'utf8')))
+            company = Company(
+                load_yaml(os.path.join(args.data_dir, 'init.yaml'))['me'])
+            rendered_output = render.render(invoice, company)
+            # FIXME: This doesn't match with the current interfaces, only an
+            #        idea
+            output = TexGenerator(rendered_output).generate()
 
         return 0
 
