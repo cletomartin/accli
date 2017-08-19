@@ -1,15 +1,15 @@
 # -*- coding:utf-8; mode python -*-
 
 import os
-import codecs
+import tempfile
 
-import yaml
+from subprocess import check_output
 
 from accli import config
 from accli.core import Command
 from accli.model import Invoice, Company
-from accli.utils import get_template_full_path, load_yaml
-from accli.template_render import TemplateRender
+from accli.path import load_yaml, find_executable
+from accli.template import render_template, get_template_full_path
 
 
 class ListCmd(Command):
@@ -47,44 +47,72 @@ class GenerateCmd(Command):
 
         self.parser.add_argument(
             'template_name',
-            help='Name of the template to use')
+            help='Name of the template to use'
+        )
         self.parser.add_argument(
             'invoice_paths', nargs='+', default=[],
-            help='Paths to input invoice')
+            help='paths to input invoice'
+        )
         self.parser.add_argument(
             '-d', '--data-dir', dest='data_dir',
             default=config.ACCLI_DATA_ROOTDIR,
-            help='set the path to accli data root directory')
+            help='path to accli data root directory'
+        )
         self.parser.add_argument(
             '-t', '--template-dir', dest='template_dir',
-            default='templates/mkinvoice',
-            help=("set the path to template root directory. "
-                  "Default 'templates/mkinvoice'"))
+            help=("path to invoice template directory. "
+                  "Default '<data-dir>/templates/invoice'")
+        )
         self.parser.add_argument(
             '-o', '--output-dir', dest='output_dir', default=os.getcwd(),
-            help='set the output path for the generated files')
+            help='the output path for the generated files'
+        )
         self.parser.add_argument(
             '-f', '--format', dest='format', default='tex', choices=['tex'],
-            help="defines template format. Default 'tex'")
-        self.parser.add_argument(
-            '-r', '--list-renders', dest='list_renders', action='store_true',
-            help='shows available renders.')
+            help="template format. Default 'tex'"
+        )
 
     def run(self, args):
-        template_path = get_template_full_path(
-            args.template_dir, args.template_name)
+        deps = ['rubber', 'pdflatex']
+        for d in deps:
+            if find_executable(d) is None:
+                print(
+                    'ERROR - {} are needed to generate PDFs. '
+                    'Please installed them'.format(deps)
+                )
+                return 1
 
-        render = TemplateRender(template_path)
+        if args.template_dir is None:
+            args.template_dir = os.path.join(
+                args.data_dir, 'templates', 'invoice'
+            )
+        template_path = get_template_full_path(
+            args.template_dir, args.template_name
+        )
 
         for filename in args.invoice_paths:
-            invoice = Invoice(yaml.load(codecs.open(filename, 'r', 'utf8')))
+            invoice = Invoice(load_yaml(filename))
             company = Company(
-                load_yaml(os.path.join(args.data_dir, 'init.yaml'))['me'])
-            rendered_output = render.render(invoice, company)
-            # FIXME: This doesn't match with the current interfaces, only an
-            #        idea
-            output = TexGenerator(rendered_output).generate()
+                load_yaml(os.path.join(args.data_dir, 'init.yaml'))
+            )
+            rendered_output = render_template(
+                template_path, invoice=invoice, company=company
+            )
 
+            # TODO: we only support PDF conversion from Tex for the
+            # time being. This should be changed by a more general
+            # mechanism that allows different kind of inputs and
+            # outputs.
+            output_filename = (
+                os.path.splitext(os.path.basename(filename))[0] + '.pdf'
+            )
+            with tempfile.NamedTemporaryFile() as f:
+                f.file.write(rendered_output.encode())
+                cmd = "cat {} | rubber-pipe -I {} -d > {}".format(
+                    f.name, os.path.dirname(template_path), output_filename
+                )
+                check_output(cmd, shell=True)
+            print('File {} generated'.format(output_filename))
         return 0
 
 
