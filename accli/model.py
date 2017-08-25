@@ -5,9 +5,9 @@
 
 import os
 
-from accli.core import YAMLLoader
 from accli import config
-from accli.utils import get_all_yaml_files
+from accli.core import YAMLLoader
+from accli.path import get_all_yaml_files
 
 
 class LoadingError(Exception):
