@@ -4,13 +4,13 @@ import os
 import yaml
 import codecs
 
-from accli import config
+from accli.config import get_accli_repo_path
 
 
 class YAMLLoader(yaml.loader.Loader):
     def __init__(self, stream):
         super().__init__(stream)
-        self.root_dir = config.ACCLI_DATA_ROOTDIR
+        self.root_dir = get_accli_repo_path()
         self._filename = stream.name
 
     def include(self, node):

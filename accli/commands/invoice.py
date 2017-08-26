@@ -5,7 +5,7 @@ import tempfile
 
 from subprocess import check_output
 
-from accli import config
+from accli.config import get_accli_repo_path
 from accli.core import Command
 from accli.model import Invoice, Company
 from accli.path import load_yaml, find_executable
@@ -54,11 +54,6 @@ class GenerateCmd(Command):
             help='paths to input invoice'
         )
         self.parser.add_argument(
-            '-d', '--data-dir', dest='data_dir',
-            default=config.ACCLI_DATA_ROOTDIR,
-            help='path to accli data root directory'
-        )
-        self.parser.add_argument(
             '-t', '--template-dir', dest='template_dir',
             help=("path to invoice template directory. "
                   "Default '<data-dir>/templates/invoice'")
@@ -74,6 +69,7 @@ class GenerateCmd(Command):
 
     def run(self, args):
         deps = ['rubber', 'pdflatex']
+        data_dir = get_accli_repo_path()
         for d in deps:
             if find_executable(d) is None:
                 print(
@@ -83,9 +79,7 @@ class GenerateCmd(Command):
                 return 1
 
         if args.template_dir is None:
-            args.template_dir = os.path.join(
-                args.data_dir, 'templates', 'invoice'
-            )
+            args.template_dir = os.path.join(data_dir, 'templates', 'invoice')
         template_path = get_template_full_path(
             args.template_dir, args.template_name
         )
@@ -93,7 +87,7 @@ class GenerateCmd(Command):
         for filename in args.invoice_paths:
             invoice = Invoice(load_yaml(filename))
             company = Company(
-                load_yaml(os.path.join(args.data_dir, 'init.yaml'))
+                load_yaml(os.path.join(data_dir, 'init.yaml'))
             )
             rendered_output = render_template(
                 template_path, invoice=invoice, company=company

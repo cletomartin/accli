@@ -4,7 +4,7 @@ import os
 import shutil
 import subprocess as sp
 
-from accli.config import get_config, get_config_path
+from accli.config import get_config
 from accli.core import Command
 from accli.path import find_executable
 
@@ -27,33 +27,33 @@ class InitCmd(Command):
         super().__init__('init', subparsers)
 
     def run(self, args):
-        cfg_path = get_config_path()
-        first_time = not os.path.isfile(cfg_path)
+        args.cfg_path = args.cfg_path
+        first_time = not os.path.isfile(args.cfg_path)
 
-        cfg = get_config(cfg_path)
-        basedir = os.path.dirname(cfg_path)
+        cfg = get_config(args.cfg_path)
+        basedir = os.path.dirname(args.cfg_path)
         if not os.path.exists(basedir):
             os.makedirs(basedir)
 
         if not first_time:
             answer = yesno(
-                '{} already exists. '.format(cfg_path) + ' '
+                '{} already exists. '.format(args.cfg_path) + ' '
                 'Do you want to override it?'
             )
             if answer == 'n':
                 print('OK. Nothing done.')
                 return 0
 
-        fields = ['accli_repo_path', 'accli_repo_git_url']
+        fields = ['accli-repo-path', 'accli-repo-git-url']
         print('Please provide the following config values:')
         for f in fields:
-            value = input('{} [{}]: '.format(f, cfg['core'][f])).strip()
+            value = input('{} [{}]: '.format(f, cfg['general'][f])).strip()
             if value:
-                cfg['core'][f] = value
+                cfg['general'][f] = value
 
-        repo_path = cfg['core']['accli_repo_path']
-        cfg['core']['accli_repo_path'] = os.path.expanduser(repo_path)
-        repo_url = cfg['core']['accli_repo_git_url'] or SKELETON_REPO
+        repo_path = cfg['general']['accli-repo-path']
+        cfg['general']['accli-repo-path'] = os.path.expanduser(repo_path)
+        repo_url = cfg['general']['accli-repo-git-url'] or SKELETON_REPO
         if not os.path.exists(repo_path):
             question = 'Looks like {} does not exists. '.format(repo_path)
             if not repo_url:
@@ -74,5 +74,5 @@ class InitCmd(Command):
         else:
             print('{} already exists. Nothing to do.'.format(repo_path))
 
-        cfg.write(open(cfg_path, 'w'))
+        cfg.write(open(args.cfg_path, 'w'))
         return 0

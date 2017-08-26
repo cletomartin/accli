@@ -5,7 +5,7 @@
 
 import os
 
-from accli import config
+from accli.config import get_accli_repo_path
 from accli.core import YAMLLoader
 from accli.path import get_all_yaml_files
 
@@ -34,14 +34,20 @@ class ModelObject(object):
     @classmethod
     def create_from_file(cls, filepath, loader=YAMLLoader):
         fullpath = os.path.join(
-            config.ACCLI_DATA_ROOTDIR, cls.accli_directory, filepath)
+            get_accli_repo_path(),
+            cls.accli_directory,
+            filepath
+        )
         if not os.path.isfile(fullpath):
             raise LoadingError("Path '%s' does not exist" % fullpath)
         return cls(loader.load(fullpath))
 
     @classmethod
     def collect_all(cls, loader=YAMLLoader):
-        dirpath = os.path.join(config.ACCLI_DATA_ROOTDIR, cls.accli_directory)
+        dirpath = os.path.join(
+            get_accli_repo_path(),
+            cls.accli_directory
+        )
         yaml_files = get_all_yaml_files(dirpath)
         return [cls(loader.load(f)) for f in yaml_files]
 
